@@ -20,21 +20,31 @@ Write a solution to rearrange the `Products` table so that each row has `(produc
 
 Return the result table in any order.
 
-## Final SQL Solution
+## Technical Concepts Learned
 
-```sql
-SELECT product_id, 'store1' AS store, store1 AS 'price' 
-FROM Products
-WHERE store1 IS NOT NULL
+1. **Horizontal to Vertical Transformation (Unpivoting)**: Converting wide-format columns (`store1`, `store2`, `store3`) into long-format row structures using set operations.
+2. **Literal String Aliasing (`'store1' AS store`)**: Injecting static string identifiers into query results to represent categorical column names as row values.
+3. **Null Filtering (`IS NOT NULL`)**: Excluding unavailable store records dynamically by filtering out null prices before restructuring.
+4. **Set Concatenation (`UNION ALL`)**: Combining multiple independent query datasets vertically into a single unified result table.
 
-UNION ALL
+## Example 1
 
-SELECT product_id, 'store2' AS store, store2 AS 'price' 
-FROM Products
-WHERE store2 IS NOT NULL
+**Input:** 
+Products table:
+| product_id | store1 | store2 | store3 |
+| :--------- | :----- | :----- | :----- |
+| 0          | 95     | 100    | 105    |
+| 1          | 70     | null   | 80     |
 
-UNION ALL
+**Output:** 
+| product_id | store  | price |
+| :--------- | :----- | :---- |
+| 0          | store1 | 95    |
+| 0          | store2 | 100   |
+| 0          | store3 | 105   |
+| 1          | store1 | 70    |
+| 1          | store3 | 80    |
 
-SELECT product_id, 'store3' AS store, store3 AS 'price' 
-FROM Products
-WHERE store3 IS NOT NULL;
+**Explanation:** 
+- Product 0 is available in all three stores with prices 95, 100, and 105 respectively.
+- Product 1 is available in store1 with price 70 and store3 with price 80. The product is not available in store2.
