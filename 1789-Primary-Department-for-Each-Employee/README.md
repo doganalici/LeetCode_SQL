@@ -22,15 +22,35 @@ Write a solution to report all the employees with their primary department. For 
 
 Return the result table in any order.
 
-## Final SQL Solution
+## Technical Concepts Learned
 
-```sql
-SELECT employee_id, department_id 
-FROM Employee
-WHERE primary_flag = 'Y'
-   OR employee_id IN (
-       SELECT employee_id 
-       FROM Employee 
-       GROUP BY employee_id 
-       HAVING COUNT(*) = 1
-   );
+1. **Conditional Filtering (`OR`)**: Combining primary department selections with single-department fallback rules.
+2. **Subquery with Aggregation (`IN` & `HAVING COUNT(*) = 1`)**: Identifying employees who belong to only a single department regardless of their flag value by checking total row counts per employee.
+
+## Example 1
+
+**Input:** 
+Employee table:
+| employee_id | department_id | primary_flag |
+| :---------- | :------------ | :----------- |
+| 1           | 1             | N            |
+| 2           | 1             | Y            |
+| 2           | 2             | N            |
+| 3           | 3             | N            |
+| 4           | 2             | N            |
+| 4           | 3             | Y            |
+| 4           | 4             | N            |
+
+**Output:** 
+| employee_id | department_id |
+| :---------- | :------------ |
+| 1           | 1             |
+| 2           | 1             |
+| 3           | 3             |
+| 4           | 3             |
+
+**Explanation:** 
+- The Primary department for employee 1 is 1 (only 1 department).
+- The Primary department for employee 2 is 1 (flag = 'Y').
+- The Primary department for employee 3 is 3 (only 1 department).
+- The Primary department for employee 4 is 3 (flag = 'Y').
